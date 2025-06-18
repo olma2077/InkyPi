@@ -1,0 +1,136 @@
+<style>
+    .form-group.calendar-entry {
+        margin-bottom: 1rem;
+    }
+
+    .form-group.nowrap {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .form-button.remove-calendar {
+        background-color: #eee;
+        border: none;
+        padding: 4px 8px;
+        cursor: pointer;
+        font-size: 0.9em;
+    }
+
+    select.color-select {
+        width: 80px;
+        padding: 0;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 12px 12px;
+    }
+
+    /* Each option gets a colored box using a trick: */
+    option.red { background-color: red; color: white; }
+    option.green { background-color: green; color: white; }
+    option.blue { background-color: blue; color: white; }
+    option.yellow { background-color: yellow; color: black; }
+    option.black { background-color: black; color: white; }
+    option.white { background-color: white; color: black; }
+</style>
+
+<div id="calendar-settings-container">
+    <!-- Calendar inputs will be injected here -->
+</div>
+
+<div class="form-group">
+    <button type="button" class="form-button" onclick="addCalendarInput()">Add Calendar</button>
+</div>
+
+<script>
+    const calendarColors = ['red', 'green', 'blue', 'yellow', 'black', 'white'];
+
+    function createColorSelect(selectedColor) {
+        const select = document.createElement("select");
+        select.name = "calendarColors[]";
+        select.className = "color-select form-input";
+
+        calendarColors.forEach(color => {
+            const option = document.createElement("option");
+            option.value = color;
+            option.className = color;
+            option.textContent = ''; // no name, just color box
+            if (color === selectedColor) {
+                option.selected = true;
+            }
+            select.appendChild(option);
+        });
+
+        return select;
+    }
+
+    function createCalendarInput(index, url = '', color = 'red', required = false) {
+        const container = document.createElement('div');
+        container.className = 'form-group calendar-entry';
+        container.dataset.index = index;
+
+        const label = document.createElement('label');
+        label.className = 'form-label';
+        label.textContent = `Calendar URL ${required ? '(required)' : ''}:`;
+
+        const row = document.createElement('div');
+        row.className = 'form-group nowrap';
+
+        const input = document.createElement('input');
+        input.type = "text";
+        input.name = "calendarUrls[]";
+        input.placeholder = "https://...";
+        input.className = "form-input";
+        input.value = url;
+        if (required) input.required = true;
+
+        const select = createColorSelect(color);
+
+        row.appendChild(input);
+        row.appendChild(select);
+
+        if (!required) {
+            const removeButton = document.createElement('button');
+            removeButton.type = "button";
+            removeButton.className = "form-button remove-calendar";
+            removeButton.textContent = "Remove";
+            removeButton.onclick = () => container.remove();
+            row.appendChild(removeButton);
+        }
+
+        container.appendChild(label);
+        container.appendChild(row);
+
+        return container;
+    }
+
+    function addCalendarInput(url = '', color = 'red') {
+        const container = document.getElementById('calendar-settings-container');
+        const index = container.children.length;
+        const calendarInput = createCalendarInput(index, url, color, false);
+        container.appendChild(calendarInput);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const container = document.getElementById('calendar-settings-container');
+        const urls = pluginSettings.calendarUrls || [];
+        const colors = pluginSettings.calendarColors || [];
+
+        // required first calendar
+        const firstUrl = urls[0] || '';
+        const firstColor = colors[0] || 'red';
+        const firstInput = createCalendarInput(0, firstUrl, firstColor, true);
+        container.appendChild(firstInput);
+
+        // optional additional calendars
+        for (let i = 1; i < urls.length; i++) {
+            addCalendarInput(urls[i], colors[i] || 'red');
+        }
+    });
+</script>
