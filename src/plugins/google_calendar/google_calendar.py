@@ -32,8 +32,8 @@ class GoogleCalendar(BasePlugin):
 
     def generate_image(self, settings, device_config):
 
-
-        events = self.get_events(settings.calendars)
+        events = None
+        # events = self.get_events(settings.calendars)
         image = self.render_events(events)
         return image
 
