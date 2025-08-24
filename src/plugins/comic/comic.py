@@ -18,7 +18,7 @@ class Comic(BasePlugin):
             raise RuntimeError("Invalid comic provided.")
 
         comic_panel = COMICS[comic]()
-        image_url = comic_panel.url
+        image_url = comic_panel["url"]
         if not image_url:
             raise RuntimeError("Failed to retrieve latest comic url.")
 
