@@ -3,7 +3,7 @@ from PIL import Image
 
 import requests
 
-from .comic_parser import COMICS
+from .comic_parser import COMICS, get_panel
 
 
 class Comic(BasePlugin):
@@ -17,7 +17,7 @@ class Comic(BasePlugin):
         if not comic or comic not in COMICS:
             raise RuntimeError("Invalid comic provided.")
 
-        comic_panel = COMICS[comic]()
+        comic_panel = get_panel(comic)
         image_url = comic_panel["url"]
         if not image_url:
             raise RuntimeError("Failed to retrieve latest comic url.")
