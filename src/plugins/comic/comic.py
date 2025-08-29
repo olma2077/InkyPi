@@ -37,7 +37,7 @@ class Comic(BasePlugin):
             if comic_panel["caption"]:
                 height += 20
             background = Image.new("RGB", (width, height), "white")
-            font = ImageFont.truetype("arial.pil", size=20)
+            font = ImageFont.truetype("DejaVuSans.ttf", size=20)
             draw = ImageDraw.Draw(background)
             if comic_panel["title"]:
                 draw.text((0, 0), comic_panel["title"], font=font)
