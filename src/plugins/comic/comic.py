@@ -32,10 +32,10 @@ class Comic(BasePlugin):
 
         with Image.open(response.raw) as img:
             img.thumbnail((width, height), Image.LANCZOS)
-            if comic_panel["title"]:
-                height += 40
-            if comic_panel["caption"]:
-                height += 40
+            # if comic_panel["title"]:
+            #     height -= 20
+            # if comic_panel["caption"]:
+            #     height -= 20
             background = Image.new("RGB", (width, height), "white")
             font = ImageFont.truetype("DejaVuSans.ttf", size=18)
             draw = ImageDraw.Draw(background)
