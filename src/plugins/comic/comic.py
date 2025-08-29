@@ -42,6 +42,6 @@ class Comic(BasePlugin):
             if comic_panel["title"]:
                 draw.text((width // 2, 0), comic_panel["title"], font=font, fill="black", anchor="ma")
             if comic_panel["caption"]:
-                draw.text((width // 2, height), comic_panel["caption"], font=font, fill="black", anchor="md")
+                draw.multiline_text((width // 2, height), comic_panel["caption"], font=font, fill="black", anchor="md")
             background.paste(img, ((width - img.width) // 2, (height - img.height) // 2))
             return background
