@@ -1,5 +1,5 @@
 from plugins.base_plugin.base_plugin import BasePlugin
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 import requests
 
@@ -32,6 +32,16 @@ class Comic(BasePlugin):
 
         with Image.open(response.raw) as img:
             img.thumbnail((width, height), Image.LANCZOS)
+            if comic_panel["title"]:
+                height += 20
+            if comic_panel["caption"]:
+                height += 20
             background = Image.new("RGB", (width, height), "white")
+            font = ImageFont.truetype("arial.ttf", size=20)
+            draw = ImageDraw.Draw(background)
+            if comic_panel["title"]:
+                draw.text((0, 0), comic_panel["title"], font=font)
+            if comic_panel["caption"]:
+                draw.text((0, height - 20), comic_panel["caption"], font=font)
             background.paste(img, ((width - img.width) // 2, (height - img.height) // 2))
             return background
