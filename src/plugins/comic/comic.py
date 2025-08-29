@@ -40,8 +40,8 @@ class Comic(BasePlugin):
             font = ImageFont.truetype("DejaVuSans.ttf", size=20)
             draw = ImageDraw.Draw(background)
             if comic_panel["title"]:
-                draw.text((0, 0), comic_panel["title"], font=font)
+                draw.text((width // 2, 0), comic_panel["title"], font=font, fill="black")
             if comic_panel["caption"]:
-                draw.text((0, height - 20), comic_panel["caption"], font=font)
+                draw.text((width // 2, height - 20), comic_panel["caption"], font=font, fill="black")
             background.paste(img, ((width - img.width) // 2, (height - img.height) // 2))
             return background
