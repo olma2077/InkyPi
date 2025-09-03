@@ -49,7 +49,7 @@ class Comic(BasePlugin):
             img.thumbnail((width, height - top_padding - bottom_padding), Image.LANCZOS)
 
             x = (width - img.width) // 2
-            y = min(top_padding, (height - img.height) // 2)
+            y = max(top_padding, (height - img.height) // 2)
             background.paste(img, (x, y))
 
             return background
