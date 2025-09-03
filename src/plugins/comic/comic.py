@@ -39,12 +39,12 @@ class Comic(BasePlugin):
             if comic_panel["title"]:
                 wrapped_text = self._wrap_text(comic_panel["title"], font, width)
                 draw.multiline_text((width // 2, 0), wrapped_text, font=font, fill="black", anchor="ma")
-                img_height -= font.getbbox(wrapped_text)[4]
+                img_height -= font.getbbox(wrapped_text)[3]
 
             if comic_panel["caption"]:
                 wrapped_text = self._wrap_text(comic_panel["caption"], font, width)
                 draw.multiline_text((width // 2, height), wrapped_text, font=font, fill="black", anchor="md")
-                img_height -= font.getbbox(wrapped_text)[4]
+                img_height -= font.getbbox(wrapped_text)[3]
 
             img.thumbnail((img_width, img_height), Image.LANCZOS)
 
@@ -57,7 +57,7 @@ class Comic(BasePlugin):
 
         while words:
             line = words.pop()
-            while words and font.getbbox(line + ' ' + words[-1])[3] < width:
+            while words and font.getbbox(line + ' ' + words[-1])[2] < width:
                 line += words.pop()
             lines.append(line)
 
