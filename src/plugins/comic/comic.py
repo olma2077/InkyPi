@@ -17,6 +17,8 @@ class Comic(BasePlugin):
         if not comic or comic not in COMICS:
             raise RuntimeError("Invalid comic provided.")
 
+        is_caption = settings.get("titleCaption") == "true"
+
         comic_panel = get_panel(comic)
 
         dimensions = device_config.get_resolution()
@@ -24,9 +26,9 @@ class Comic(BasePlugin):
             dimensions = dimensions[::-1]
         width, height = dimensions
 
-        return self._compose_image(comic_panel, width, height)
+        return self._compose_image(comic_panel, is_caption, width, height)
 
-    def _compose_image(self, comic_panel, width, height):
+    def _compose_image(self, comic_panel, is_caption, width, height):
         response = requests.get(comic_panel["image_url"], stream=True)
         response.raise_for_status()
 
@@ -36,15 +38,16 @@ class Comic(BasePlugin):
             draw = ImageDraw.Draw(background)
             top_padding, bottom_padding = 0, 0
 
-            if comic_panel["title"]:
-                lines, wrapped_text = self._wrap_text(comic_panel["title"], font, width)
-                draw.multiline_text((width // 2, 0), wrapped_text, font=font, fill="black", anchor="ma")
-                top_padding = font.getbbox(wrapped_text)[3] * lines
+            if is_caption:
+                if comic_panel["title"]:
+                    lines, wrapped_text = self._wrap_text(comic_panel["title"], font, width)
+                    draw.multiline_text((width // 2, 0), wrapped_text, font=font, fill="black", anchor="ma")
+                    top_padding = font.getbbox(wrapped_text)[3] * lines
 
-            if comic_panel["caption"]:
-                lines, wrapped_text = self._wrap_text(comic_panel["caption"], font, width)
-                draw.multiline_text((width // 2, height), wrapped_text, font=font, fill="black", anchor="md")
-                bottom_padding = font.getbbox(wrapped_text)[3] * lines
+                if comic_panel["caption"]:
+                    lines, wrapped_text = self._wrap_text(comic_panel["caption"], font, width)
+                    draw.multiline_text((width // 2, height), wrapped_text, font=font, fill="black", anchor="md")
+                    bottom_padding = font.getbbox(wrapped_text)[3] * lines
 
             scale = min(width / img.width, (height - top_padding - bottom_padding) / img.height)
             new_size = (int(img.width * scale), int(img.height * scale))
