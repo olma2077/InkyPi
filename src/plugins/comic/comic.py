@@ -58,7 +58,7 @@ class Comic(BasePlugin):
         while words:
             line = words.pop()
             while words and font.getbbox(line + ' ' + words[-1])[2] < width:
-                line += words.pop()
+                line += ' ' + words.pop()
             lines.append(line)
 
         return '\n'.join(lines)
