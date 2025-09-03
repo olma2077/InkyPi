@@ -53,12 +53,12 @@ class Comic(BasePlugin):
 
     def _wrap_text(self, text, font, width):
         lines = []
-        words = text.split()
+        words = text.split()[::-1]
 
         while words:
-            line = []
-            while words and font.getbbox(line + words[0])[3] <= width:
-                line += words.pop(0)
-            lines.append(' '.join(line))
+            line = words.pop()
+            while words and font.getbbox(line + ' ' + words[-1])[3] < width:
+                line += words.pop()
+            lines.append(line)
 
         return '\n'.join(lines)
