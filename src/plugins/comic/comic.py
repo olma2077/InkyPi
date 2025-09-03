@@ -34,21 +34,24 @@ class Comic(BasePlugin):
             background = Image.new("RGB", (width, height), "white")
             font = ImageFont.truetype("DejaVuSans.ttf", size=16)
             draw = ImageDraw.Draw(background)
-            img_width, img_height = width, height
+            top_padding, bottom_padding = 0, 0
 
             if comic_panel["title"]:
                 lines, wrapped_text = self._wrap_text(comic_panel["title"], font, width)
                 draw.multiline_text((width // 2, 0), wrapped_text, font=font, fill="black", anchor="ma")
-                img_height -= font.getbbox(wrapped_text)[3] * lines
+                top_padding = font.getbbox(wrapped_text)[3] * lines
 
             if comic_panel["caption"]:
                 lines, wrapped_text = self._wrap_text(comic_panel["caption"], font, width)
                 draw.multiline_text((width // 2, height), wrapped_text, font=font, fill="black", anchor="md")
-                img_height -= font.getbbox(wrapped_text)[3] * lines
+                bottom_padding = font.getbbox(wrapped_text)[3] * lines
 
-            img.thumbnail((img_width, img_height), Image.LANCZOS)
+            img.thumbnail((width, height - top_padding - bottom_padding), Image.LANCZOS)
 
-            background.paste(img, ((width - img.width) // 2, (height - img.height) // 2))
+            x = (width - img.width) // 2
+            y = min(top_padding, (height - img.height) // 2)
+            background.paste(img, (x, y))
+
             return background
 
     def _wrap_text(self, text, font, width):
