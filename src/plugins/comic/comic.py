@@ -46,7 +46,9 @@ class Comic(BasePlugin):
                 draw.multiline_text((width // 2, height), wrapped_text, font=font, fill="black", anchor="md")
                 bottom_padding = font.getbbox(wrapped_text)[3] * lines
 
-            img.thumbnail((width, height - top_padding - bottom_padding), Image.LANCZOS)
+            scale = min(width / img.width, (height - top_padding - bottom_padding) / img.height)
+            new_size = (int(img.width * scale), int(img.height * scale))
+            img = img.resize(new_size, Image.LANCZOS)
 
             x = (width - img.width) // 2
             y = (height - img.height) // 2 if top_padding + bottom_padding < (height - img.height) else \
