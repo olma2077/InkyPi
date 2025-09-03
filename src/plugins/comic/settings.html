@@ -8,15 +8,16 @@
 </div>
 
 <div class="form-group">
-    <label for="titleCaption" class="form-label">Show Comic Title and Caption:</label>
-    <div class="toggle-container">
-        <input type="checkbox" id="titleCaption" name="titleCaption" class="toggle-checkbox" value="false" onclick="this.value=this.checked ? 'true' : 'false';">
-        <label for="titleCaption" class="toggle-label"></label>
+    <div class="form-group">
+        <label for="titleCaption" class="form-label">Show Comic Title and Caption:</label>
+        <div class="toggle-container">
+            <input type="checkbox" id="titleCaption" name="titleCaption" class="toggle-checkbox" value="false" onclick="this.value=this.checked ? 'true' : 'false';">
+            <label for="titleCaption" class="toggle-label"></label>
+        </div>
     </div>
-</div>
 
-<div class="form-group">
-        <label for="fontSize" class="form-label">Title and Caption Font Size:</label>
+    <div class="form-group">
+        <label for="fontSize" class="form-label">Font Size:</label>
         <select id="fontSize" name="fontSize" class="form-input"">
             <option value="12">12</option>
             <option value="14">14</option>
@@ -25,7 +26,7 @@
             <option value="20">20</option>
         </select>
     </div>
-
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {

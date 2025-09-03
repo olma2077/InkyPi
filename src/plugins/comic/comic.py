@@ -35,7 +35,7 @@ class Comic(BasePlugin):
 
         with Image.open(response.raw) as img:
             background = Image.new("RGB", (width, height), "white")
-            font = ImageFont.truetype("DejaVuSans.ttf", size=caption_font_size)
+            font = ImageFont.truetype("DejaVuSans.ttf", size=int(caption_font_size))
             draw = ImageDraw.Draw(background)
             top_padding, bottom_padding = 0, 0
 
