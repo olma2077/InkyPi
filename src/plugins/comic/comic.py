@@ -18,30 +18,47 @@ class Comic(BasePlugin):
             raise RuntimeError("Invalid comic provided.")
 
         comic_panel = get_panel(comic)
-        image_url = comic_panel["url"]
-        if not image_url:
-            raise RuntimeError("Failed to retrieve latest comic url.")
 
         dimensions = device_config.get_resolution()
         if device_config.get_config("orientation") == "vertical":
             dimensions = dimensions[::-1]
         width, height = dimensions
 
-        response = requests.get(image_url, stream=True)
+        return self._compose_image(comic_panel, width, height)
+
+    def _compose_image(self, comic_panel, width, height):
+        response = requests.get(comic_panel["image_url"], stream=True)
         response.raise_for_status()
 
         with Image.open(response.raw) as img:
-            img.thumbnail((width, height), Image.LANCZOS)
-            # if comic_panel["title"]:
-            #     height -= 20
-            # if comic_panel["caption"]:
-            #     height -= 20
             background = Image.new("RGB", (width, height), "white")
-            font = ImageFont.truetype("DejaVuSans.ttf", size=18)
+            font = ImageFont.truetype("DejaVuSans.ttf", size=16)
             draw = ImageDraw.Draw(background)
+            img_width, img_height = width, height
+
             if comic_panel["title"]:
-                draw.text((width // 2, 0), comic_panel["title"], font=font, fill="black", anchor="ma")
+                wrapped_text = self._wrap_text(comic_panel["title"], font, width)
+                draw.multiline_text((width // 2, 0), wrapped_text, font=font, fill="black", anchor="ma")
+                img_height -= font.getsize(wrapped_text)[1]
+
             if comic_panel["caption"]:
-                draw.multiline_text((width // 2, height), comic_panel["caption"], font=font, fill="black", anchor="md")
+                wrapped_text = self._wrap_text(comic_panel["caption"], font, width)
+                draw.multiline_text((width // 2, height), wrapped_text, font=font, fill="black", anchor="md")
+                img_height -= font.getsize(wrapped_text)[1]
+
+            img.thumbnail((img_width, img_height), Image.LANCZOS)
+
             background.paste(img, ((width - img.width) // 2, (height - img.height) // 2))
             return background
+
+    def _wrap_text(self, text, font, width):
+        lines = []
+        words = text.split()
+
+        while words:
+            line = []
+            while words and font.getsize(line + words[0])[0] <= width:
+                line += words.pop(0)
+            lines.append(' '.join(line))
+
+        return '\n'.join(lines)

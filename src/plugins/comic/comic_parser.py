@@ -70,7 +70,7 @@ def get_panel(comic_name):
         raise RuntimeError("Failed to retrieve latest comic.")
 
     return {
-        "url": COMICS[comic_name]["url"](element),
+        "image_url": COMICS[comic_name]["url"](element),
         "title": COMICS[comic_name]["title"](feed),
         "caption": COMICS[comic_name]["caption"](element),
     }
