@@ -32,7 +32,7 @@ class Comic(BasePlugin):
 
         with Image.open(response.raw) as img:
             background = Image.new("RGB", (width, height), "white")
-            font = ImageFont.truetype("DejaVuSans.ttf", size=16)
+            font = ImageFont.truetype("DejaVuSans.ttf", size=14)
             draw = ImageDraw.Draw(background)
             top_padding, bottom_padding = 0, 0
 
@@ -49,7 +49,8 @@ class Comic(BasePlugin):
             img.thumbnail((width, height - top_padding - bottom_padding), Image.LANCZOS)
 
             x = (width - img.width) // 2
-            y = max(top_padding, (height - img.height) // 2)
+            y = (height - img.height) // 2 if top_padding + bottom_padding < (height - img.height) else \
+                top_padding
             background.paste(img, (x, y))
 
             return background
