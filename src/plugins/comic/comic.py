@@ -18,6 +18,7 @@ class Comic(BasePlugin):
             raise RuntimeError("Invalid comic provided.")
 
         is_caption = settings.get("titleCaption") == "true"
+        caption_font_size = settings.get("fontSize")
 
         comic_panel = get_panel(comic)
 
@@ -26,15 +27,15 @@ class Comic(BasePlugin):
             dimensions = dimensions[::-1]
         width, height = dimensions
 
-        return self._compose_image(comic_panel, is_caption, width, height)
+        return self._compose_image(comic_panel, is_caption, caption_font_size, width, height)
 
-    def _compose_image(self, comic_panel, is_caption, width, height):
+    def _compose_image(self, comic_panel, is_caption, caption_font_size, width, height):
         response = requests.get(comic_panel["image_url"], stream=True)
         response.raise_for_status()
 
         with Image.open(response.raw) as img:
             background = Image.new("RGB", (width, height), "white")
-            font = ImageFont.truetype("DejaVuSans.ttf", size=14)
+            font = ImageFont.truetype("DejaVuSans.ttf", size=caption_font_size)
             draw = ImageDraw.Draw(background)
             top_padding, bottom_padding = 0, 0
 
